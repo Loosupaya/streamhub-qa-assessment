@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streamhub Campaign Analytics</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1e293b;
+    }
+
+    header {
+      background: #152b4a;
+      color: white;
+      padding: 22px 6%;
+    }
+
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 0; color: #d5e2f5; }
+
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card, .panel {
+      background: white;
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 2px 8px #152b4a12;
+    }
+
+    .metric { font-size: 28px; font-weight: bold; margin-top: 12px; }
+    .muted { color: #64748b; font-size: 14px; }
+
+    label {
+      display: block;
+      margin: 15px 0 6px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 11px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: 15px;
+    }
+
+    button {
+      margin-top: 18px;
+      background: #2563eb;
+      color: white;
+      border: 0;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover { background: #1d4ed8; }
+
+    .result {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 6px;
+      background: #eff6ff;
+    }
+
+    .chart {
+      height: 190px;
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      gap: 18px;
+      padding: 15px 10px 0;
+      border-bottom: 1px solid #cbd5e1;
+    }
+
+    .bar-wrap {
+      height: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bar {
+      width: min(55px, 75%);
+      min-height: 4px;
+      background: #3b82f6;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .bar-label { font-size: 12px; color: #64748b; }
+    .bar-value { font-size: 12px; font-weight: bold; }
+
+    .error { color: #b91c1c; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Streamhub Campaign Analytics</h1>
+    <p>Campaign performance dashboard and report insights</p>
+  </header>
+
+  <main>
+    <section class="grid" aria-label="Campaign summary">
+      <article class="card">
+        <div class="muted">Total Campaigns</div>
+        <div class="metric" data-testid="total-campaigns">120</div>
+      </article>
+      <article class="card">
+        <div class="muted">Total Impressions</div>
+        <div class="metric" data-testid="total-impressions">240000</div>
+      </article>
+      <article class="card">
+        <div class="muted">Average Click Rate</div>
+        <div class="metric" data-testid="average-click-rate">2.5%</div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Generate Campaign Report</h2>
+      <p class="muted">Enter campaign data to calculate performance independently.</p>
+
+      <form id="report-form">
+        <label for="campaign-name">Campaign name</label>
+        <input id="campaign-name" name="campaignName"
+               placeholder="Example: Summer Launch" required maxlength="80">
+
+        <label for="impressions">Impressions</label>
+        <input id="impressions" name="impressions" type="number"
+               min="1" max="1000000000" step="1" required>
+
+        <label for="clicks">Clicks</label>
+        <input id="clicks" name="clicks" type="number"
+               min="0" max="1000000000" step="1" required>
+
+        <button type="submit">Generate Report</button>
+      </form>
+
+      <div id="report-result" class="result" hidden aria-live="polite">
+        <h3>Campaign Report</h3>
+        <p>Campaign: <strong id="result-name"></strong></p>
+        <p>Impressions: <strong id="result-impressions"></strong></p>
+        <p>Clicks: <strong id="result-clicks"></strong></p>
+        <p>Click-through rate: <strong id="result-rate"></strong></p>
+      </div>
+      <p id="error-message" class="error" role="alert"></p>
+    </section>
+
+    <section class="panel" style="margin-top:22px">
+      <h2>Campaign Performance Chart</h2>
+      <p class="muted">Sample impressions by campaign</p>
+      <div class="chart" role="img" aria-label="Bar chart showing campaign impressions">
+        <div class="bar-wrap">
+          <span class="bar-value">40000</span>
+          <div class="bar" data-testid="chart-bar" style="height:40%"></div>
+          <span class="bar-label">Alpha</span>
+        </div>
+        <div class="bar-wrap">
+          <span class="bar-value">65000</span>
+          <div class="bar" data-testid="chart-bar" style="height:65%"></div>
+          <span class="bar-label">Beta</span>
+        </div>
+        <div class="bar-wrap">
+          <span class="bar-value">90000</span>
+          <div class="bar" data-testid="chart-bar" style="height:90%"></div>
+          <span class="bar-label">Gamma</span>
+        </div>
+        <div class="bar-wrap">
+          <span class="bar-value">50000</span>
+          <div class="bar" data-testid="chart-bar" style="height:50%"></div>
+          <span class="bar-label">Delta</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('report-form');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const name = document.getElementById('campaign-name').value.trim();
+      const impressions = Number(document.getElementById('impressions').value);
+      const clicks = Number(document.getElementById('clicks').value);
+      const error = document.getElementById('error-message');
+
+      error.textContent = '';
+
+      if (!name || !Number.isSafeInteger(impressions) ||
+          !Number.isSafeInteger(clicks) || impressions <= 0 ||
+          clicks < 0 || clicks > impressions) {
+        error.textContent =
+          'Enter a campaign name, positive impressions, and clicks between zero and impressions.';
+        document.getElementById('report-result').hidden = true;
+        return;
+      }
+
+      const rate = (clicks / impressions) * 100;
+
+      document.getElementById('result-name').textContent = name;
+      document.getElementById('result-impressions').textContent =
+        impressions.toLocaleString('en-US');
+      document.getElementById('result-clicks').textContent =
+        clicks.toLocaleString('en-US');
+      document.getElementById('result-rate').textContent = rate.toFixed(2) + '%';
+      document.getElementById('report-result').hidden = false;
+    });
+  </script>
+</body>
+</html>
